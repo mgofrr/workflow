@@ -12,7 +12,7 @@ const resolvers = {
         return (await dbClient.get({ Key: { id }})).Item;
     },
     async listProspects() {
-        return (await dbClient.scan()).Items;
+        return (await dbClient.scan({})).Items;
     },
     async createProspect({ name, docid, place }) {
         try {
@@ -66,19 +66,17 @@ const resolvers = {
 };
 
 const isPlaceInUse = async (place) => {
-    return false;
-    // let user = await dbClient.scan({
-    //     ExpressionAttributeValues: {
-    //         ':p': {S: place}
-    //     },
-    //     //ProjectionExpression: 'Episode, Title, Subtitle',
-    //     FilterExpression: 'place = :p',
-    //     });
-    
-    // console.log("place>>>>", user);
-    
-    // return (user.Items.length);
-    //return providers.users.find(i => i.place === place && i.status !== 'rejected');
+    let data = await dbClient.scan({
+        FilterExpression: "place = :p and #s <> :s",
+        ExpressionAttributeNames: {
+            "#s": "status"
+        },
+        ExpressionAttributeValues: {
+            ":p": place,
+            ":s": "rejected"
+        },
+    });
+    return (data.Items.length);
 }
 
 module.exports = {resolvers};

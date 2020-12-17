@@ -10,7 +10,7 @@ AWS.config.update({
 const client = new AWS.DynamoDB.DocumentClient();
 
 module.exports = {
-  scan: () => client.scan({TableName: TABLE_NAME}).promise(),
+  scan: (params) => client.scan({TableName: TABLE_NAME, ...params}).promise(),
   get: (params) => client.get({TableName: TABLE_NAME, ...params}).promise(),
   query: (params) => client.query({TableName: TABLE_NAME, ...params}).promise(),
   put: (params) => client.put({TableName: TABLE_NAME, ...params}).promise(),

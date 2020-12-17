@@ -1,7 +1,7 @@
 
 
 const jwt = require('jsonwebtoken');
-const APP_SECRET = 'POLOSEAD2020';
+const { APP_SECRET } = require("../../config/config");;
 
 const jwtVerify = (token) => {
     return jwt.verify(token, APP_SECRET);
